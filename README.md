@@ -1,5 +1,4 @@
 # Kurssikartta
-
 ## Kurssikartta is my web application project for the University of Helsinki course "Tietokannat ja web-ohjelmointi".
 
 ## Technical features
