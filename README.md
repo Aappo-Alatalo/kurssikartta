@@ -1,8 +1,8 @@
 # Kurssikartta
-## Kurssikartta is my web application project for the University of Helsinki course "Tietokannat ja web-ohjelmointi".
+## Kurssikartta is my web application project for the University of Helsinki course "Tietokannat ja web-ohjelmointi". 
 
 ## Technical features
-- **Course Reviews**: Users can submit reviews and ratings for courses they have taken, sharing their perspectives on various aspects such as course content and difficulty level.
+- **University Course Reviews**: Users can submit reviews and ratings for  courses they have taken, sharing their perspectives on various aspects such as course content and difficulty level.
 - **Authentication**: Users can browse courses and reviews without authenticating, but reviews and comments can be posted only if authenticated.
 - **Account Types**: There are two different types of user accounts: moderator and regular.
 - **Requests**: Regular users can request moderators to add new courses to the platform.
