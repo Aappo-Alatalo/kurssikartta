@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<head>
+    <title>Kurssikartta - Rekisteröityminen</title>
+</head>
+<body>
+    <div style="display: grid; 
+    grid-template-columns: 1fr; 
+    grid-template-rows: repeat(auto-fit, minmax(100px, auto)); 
+    justify-items: center; 
+    align-items: center;">
+        <h1>Rekisteröidy</h1>
+        <form action="/create_user" method="POST">
+            <p>Valitse käyttäjätunnus: <input type="text" name="username"></p>
+            <p>Valitse salasana: <input type="password" name="password"></p>
+            <input type="submit" value="Rekisteröidy">
+        </form>
+        <p>Onko sinulla jo tili? <a href="/">Kirjaudu tästä</a></p>
+    </div>
+</body>

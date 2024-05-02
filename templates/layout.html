@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<head>
+    <title>Kurssikartta - {% block title %}{% endblock %}</title>
+</head>
+<body>
+    {% if session.username %}
+        <span style="position: absolute; top: 0; right: 0;">Olet kirjautunut nimellä {{ session.username }}
+        <a href="/logout"><button>Kirjaudu ulos</button></a></span>
+    {% else %}
+        <div style="position: absolute; top: 0; right: 0;">
+            <form style="display: inline;" action="/login" method="POST">
+            <span>Tunnus: <input type="text" name="username"></span>
+            <span>Salasana: <input type="password" name="password"></span>
+            <input type="submit" value="Kirjaudu">
+            </form>
+            <a href="/register"><button>Rekisteröidy</button></a>
+        </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+    
+</body>
