@@ -14,3 +14,10 @@
     background-color: lightgray;
     border-radius: .5em;
 }
+
+.login_div {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+}

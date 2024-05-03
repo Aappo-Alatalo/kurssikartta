@@ -5,10 +5,12 @@
 {% block base_block %}
 <div class="center_div">
     <h1>Rekisteröidy</h1>
-    <form action="/create_user" method="POST">
+    <form action="/register" method="POST">
         <p>Valitse käyttäjätunnus: <input type="text" name="username"></p>
-        <p>Valitse salasana: <input type="password" name="password"></p>
+        <p>Valitse salasana: <input type="password" name="password1"></p>
+        <p>Kirjoita salasana uudelleen: <input type="password" name="password2"></p>
         <input type="submit" value="Rekisteröidy">
+        <p style="color: red;">{{ message }}</p>
     </form>
     <p>Onko sinulla jo tili? <a href="/">Kirjaudu tästä</a></p>
 </div>
