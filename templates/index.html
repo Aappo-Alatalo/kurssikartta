@@ -2,11 +2,7 @@
 {% block title %}🏠{% endblock %}
 {% block content %}
 <body>
-    <div style="display: grid; 
-    grid-template-columns: 1fr; 
-    grid-template-rows: repeat(auto-fit, minmax(100px, auto)); 
-    justify-items: center; 
-    align-items: center;">
+    <div class="center_div">
         <h1>Kurssikartta.fi</h1>
         <form action="/result" method="GET">
             <input type="text" name="query", placeholder="Etsi kurssia">
@@ -15,13 +11,11 @@
         <br>
         {% if fetched_courses is defined and fetched_courses|length > 0 %}
             {% for course in fetched_courses %}
-            <div style="border: 4px solid black; border-radius: 12px;">
+            <div class="course_box">
                 Nimi: {{ course.name }} <br>
                 Opintopisteet: {{ course.credits }} <br>
                 Kuvaus: {{ course.description }} <br>
             </div>
-            <br>
-            <br>
             {% endfor %}
         {% elif fetched_courses is defined and fetched_courses|length == 0 %}
             <p>Etsimääsi kurssia ei löytynyt 🔍😕</p>

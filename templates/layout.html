@@ -1,8 +1,8 @@
-<!DOCTYPE html>
-<head>
-    <title>Kurssikartta - {% block title %}{% endblock %}</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}{% endblock %}
+
+{% block base_block %}
     {% if session.username %}
         <span style="position: absolute; top: 0; right: 0;">Olet kirjautunut nimellä {{ session.username }}
         <a href="/logout"><button>Kirjaudu ulos</button></a></span>
@@ -19,4 +19,4 @@
 
     {% block content %}{% endblock %}
     
-</body>
+{% endblock %}
