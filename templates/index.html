@@ -8,15 +8,27 @@
     justify-items: center; 
     align-items: center;">
         <h1>Kurssikartta.fi</h1>
-        {% for course in fetched_courses %}
-        <div style="border: 4px solid black; border-radius: 12px;">
-            Nimi: {{ course.name }} <br>
-            Opintopisteet: {{ course.credits }} <br>
-            Kuvaus: {{ course.description }} <br>
-        </div>
+        <form action="/result" method="GET">
+            <input type="text" name="query", placeholder="Etsi kurssia">
+            <input type="submit" value="Etsi🔍">
+        </form>
         <br>
-        <br>
-        {% endfor %}
+        {% if fetched_courses is defined and fetched_courses|length > 0 %}
+            {% for course in fetched_courses %}
+            <div style="border: 4px solid black; border-radius: 12px;">
+                Nimi: {{ course.name }} <br>
+                Opintopisteet: {{ course.credits }} <br>
+                Kuvaus: {{ course.description }} <br>
+            </div>
+            <br>
+            <br>
+            {% endfor %}
+        {% elif fetched_courses is defined and fetched_courses|length == 0 %}
+            <p>Etsimääsi kurssia ei löytynyt 🔍😕</p>
+            <p>Ehdota kurssin lisäämistä moderaattoreillemme <a href="/">tästä</a></p>
+        {% else %}
+            <p>ERROR</p>
+        {% endif %}
     </div>
 </body>
 {% endblock %}

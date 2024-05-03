@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS users CASCADE;
 
 CREATE TABLE courses (
     id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
+    name VARCHAR(50) NOT NULL,
     credits INTEGER NOT NULL,
     description TEXT
 );

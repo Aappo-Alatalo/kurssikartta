@@ -63,5 +63,13 @@ def create_user():
     sql = "INSERT INTO users (username, password, account_type) VALUES (:username, :password, 0)"
     db.session.execute(text(sql), {"username":username, "password":password_hash})
     db.session.commit()
-    session["username"] = username
+    session["username"] = username # Log new user in automatically
     return redirect("/")
+
+@app.route("/result")
+def result():
+    query = request.args["query"]
+    sql = "SELECT id, name, credits, description FROM courses WHERE name LIKE :query"
+    result = db.session.execute(text(sql), {"query":"%"+query+"%"})
+    courses = result.fetchall()
+    return render_template("index.html", fetched_courses=courses)
