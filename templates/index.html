@@ -10,11 +10,12 @@
         <br>
         {% if fetched_courses is defined and fetched_courses|length > 0 %}
             {% for course in fetched_courses %}
-            <div class="course_card">
+            <a href="courses/{{ course.id }}" class="course_card">
                 <h1>{{ course.name }}</h1>
                 <h3>{{ course.credits }} op</h3>
                 <p>{{ course.description }}</p>
-            </div>
+                <span>⭐️ {{ '%0.1f'|format(range(1, 5)|random) }}</span>
+            </a>
             {% endfor %}
         {% elif fetched_courses is defined and fetched_courses|length == 0 %}
             <p>Etsimääsi kurssia ei löytynyt 🔍😕</p>

@@ -15,6 +15,14 @@ CREATE TABLE users (
     account_type INTEGER NOT NULL
 );
 
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    course_id INTEGER REFERENCES courses(id)    
+    author_id INTEGER REFERENCES users(id),
+    content TEXT NOT NULL,
+    post_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 INSERT INTO courses (name, credits, description) VALUES ('Ohjelmoinnin perusteet', 5, 'Opiskelijan ensimmänen kosketus ohjelmointiin.');
 INSERT INTO courses (name, credits, description) VALUES ('Ohjelmoinnin jatkokurssi', 5, 'Opiskelijan toinen kosketus ohjelmointiin.');
 INSERT INTO courses (name, credits, description) VALUES ('Tietokone ja internet', 5, 'Kurssilla käsitellään vähän kaikenlaista ja kirjoitellaan esseitä 4-6 hengen ryhmissä.');

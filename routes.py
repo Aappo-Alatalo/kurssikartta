@@ -45,3 +45,11 @@ def result():
     query = request.args["query"]
     fetched_courses = courses.search_courses(query)
     return render_template("index.html", fetched_courses=fetched_courses)
+
+@app.route("/courses/") # No course takes user to this route
+def courses_page():
+    return redirect("/")
+
+@app.route("/courses/<course_id>") # Course details live here
+def course_page(course_id):
+    return render_template("course_template.html", course=course_id)

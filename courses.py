@@ -2,7 +2,7 @@ from db import db
 from sqlalchemy.sql import text
 
 def fetch_all_courses():
-    sql = "SELECT name, credits, description FROM Courses"
+    sql = "SELECT id, name, credits, description FROM Courses"
     return db.session.execute(text(sql)).fetchall()
 
 def search_courses(query):
