@@ -6,15 +6,15 @@
     <div class="login_div">
         {% if session.username %}
             <span><b>{{ session.username }}</b>
-            <a href="/logout"><button>Kirjaudu ulos</button></a></span>
+            <a href="/logout"><button class="button">Kirjaudu ulos</button></a></span>
         {% else %}
             <div>
                 <form style="display: inline;" action="/login" method="POST">
-                <span>Tunnus: <input type="text" name="username"></span>
-                <span>Salasana: <input type="password" name="password"></span>
-                <input type="submit" value="Kirjaudu">
+                    <span>Tunnus: <input type="text" name="username", autocomplete="off"></span>
+                    <span>Salasana: <input type="password" name="password"></span>
+                    <input type="submit" class="button" value="Kirjaudu">
                 </form>
-                <a href="/register"><button>Rekisteröidy</button></a>
+                <a href="/register"><button class="button">Rekisteröidy</button></a>
             </div>
         {% endif %}
     </div>
