@@ -52,4 +52,6 @@ def courses_page():
 
 @app.route("/courses/<course_id>") # Course details live here
 def course_page(course_id):
-    return render_template("course_template.html", course=course_id)
+    content = courses.fetch_details(course_id)
+    comments = courses.fetch_comments(course_id)
+    return render_template("course_template.html", content=content, comments=comments)

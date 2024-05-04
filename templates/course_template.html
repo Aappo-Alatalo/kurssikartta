@@ -1,13 +1,35 @@
 {% extends "layout.html" %}
 
-{% block title %}KURSSI{% endblock %}
+{% block title %}{{ content.name }}{% endblock %}
 
 {% block content %}
-
     <div class="center_div">
         <div class="course_detail_card">
             <a href="/" class="back_arrow">&#8592;</a> <!-- Backwards arrow -->
-            <h1>KURSSIN NIMI TÄHÄN</h1>
+            <h1>{{ content.name }} <span style="font-size: 20px;">{{ content.credits }} op</span></h1>
+            <h3>⭐️⭐️⭐️⭐️ 4.2</h3>
+            <p>{{ content.description }}</p>
+            <br>
+            <h2>Kommentit:</h2>
+            <br>
+            {% if comments is not defined or comments|length < 1 %}
+                <p>Ei vielä yhtään kommenttia 😔</p>
+            {% endif %}
+            <form action="#" method="POST">
+                <textarea class="comment" name="comment" cols="30" rows="1" placeholder="Kirjoita kommentti..."></textarea>
+                <div style="margin-left: 10px; margin-bottom: 20px;">
+                    <button type="submit" class="button"><h3 style="margin: 1px;">Lähetä</h3></button>
+                </div>
+            </form>
+            <br>
+            {% if comments is defined and comments|length > 0 %}
+                {% for comment in comments %}
+                <div class="comment">
+                    <h4>{{ comment.username }} <span style="font-size: 12px; color: #888;">{{ comment.post_date.strftime('%d-%m-%Y %H:%M') }}</span></h4>
+                    <p>{{ comment.content }}</p>
+                </div>
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
 {% endblock %}
