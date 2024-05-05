@@ -3,11 +3,26 @@ from sqlalchemy.sql import text
 from flask import session
 from werkzeug.security import check_password_hash, generate_password_hash
 
+def is_logged_in():
+    if session["username"] != None:
+        return True
+    else:
+        return False
+
+
+def get_username():
+    return session["username"]
+
+def get_user_id():
+    return session["user_id"]
+
 def logout():
+    del session["user_id"]
     del session["username"]
+    del session["account_type"]
 
 def check_username(username):
-    sql = "SELECT id, username, password FROM users WHERE username=:username"
+    sql = "SELECT id, username, password, account_type FROM users WHERE username=:username"
     result = db.session.execute(text(sql), {"username":username})
     return result.fetchone()
 
@@ -20,7 +35,9 @@ def login(username, password):
         db_password = user.password
         if check_password_hash(db_password, password):
             # Correct username and password
+            session["user_id"] = user.id
             session["username"] = user.username
+            session["account_type"] = user.account_type
             return True
         else:
             # Invalid password

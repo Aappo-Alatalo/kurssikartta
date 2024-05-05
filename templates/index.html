@@ -4,17 +4,17 @@
 <body>
     <div class="center_div">
         <h1>Kurssikartta.fi</h1>
-        <form action="/result" method="GET">
-            <input type="text" class="search_box" name="query", placeholder="Etsi kurssia", autocomplete="off">
+        <form style="min-width: 25%; width: auto;" action="/result" method="GET">
+            <input type="text" class="search_box" name="query", placeholder="Etsi kurssia 🔍", autocomplete="off">
         </form>
         <br>
         {% if fetched_courses is defined and fetched_courses|length > 0 %}
             {% for course in fetched_courses %}
             <a href="courses/{{ course.id }}" class="course_card">
                 <h1>{{ course.name }}</h1>
-                <h3>{{ course.credits }} op</h3>
-                <p>{{ course.description }}</p>
+                <h2>{{ course.credits }} op</h2>
                 <span>⭐️ {{ '%0.1f'|format(range(1, 5)|random) }}</span>
+                <p>{{ course.description }}</p>
             </a>
             {% endfor %}
         {% elif fetched_courses is defined and fetched_courses|length == 0 %}

@@ -5,8 +5,9 @@ body {
     font-optical-sizing: auto;
     font-weight: 200;
     font-style: normal;
-    margin: 0; /* Remove default margin */
-    padding: 0; /* Remove default padding */
+    font-size: calc(70% + 0.2vw);
+    margin: 0;
+    padding: 0;
 }
 
 textarea {
@@ -23,14 +24,19 @@ textarea:focus {
 
 .search_box {
     padding: 10px 0;
-    width: 300px;
+    width: 100%;
     border-top: none;
     border-right: none;
     border-left: none;
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid gray;
     outline: none;
     text-align: center;
     font-size: 18px;
+    transition: .2s;
+}
+
+.search_box:focus {
+    border-bottom: 4px solid black;
 }
 
 .center_div {
@@ -43,17 +49,22 @@ textarea:focus {
 }
 
 .course_card {
-    width: 25%;
+    display:inline-table;
+    width: 45%;
+    min-width: 40%;
+    max-width: 80%;
     border-radius: 10px;
-    height: 200px;
+    height: auto;
     padding: 20px;
     border: 4px solid black;
     background: #fff;
     transition: .4s;
     margin: 20px;
     overflow: hidden;
+    word-wrap: normal;
     text-decoration: none;
     color: black;
+    table-layout: fixed;
 }
 
 .course_card:hover {
@@ -62,6 +73,7 @@ textarea:focus {
 }
 
 .course_detail_card {
+    display: inline-table;
     width: 60%;
     border-radius: 10px;
     height: auto;
@@ -83,9 +95,9 @@ textarea:focus {
     right: 0;
     padding: 15px;
     z-index: 999;
-    display: flex;
-    justify-content: flex-end; /* Align items to the right */
-    align-items: center;
+    display:flex;
+    justify-content: flex-end;
+    align-items: right;
 }
 
 .button {

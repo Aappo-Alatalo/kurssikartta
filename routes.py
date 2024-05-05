@@ -3,6 +3,7 @@ from flask import redirect, render_template, request
 from os import getenv
 import courses
 import accounts
+import comments
 
 app.secret_key = getenv("SECRET_KEY")
 
@@ -54,4 +55,20 @@ def courses_page():
 def course_page(course_id):
     content = courses.fetch_details(course_id)
     comments = courses.fetch_comments(course_id)
-    return render_template("course_template.html", content=content, comments=comments)
+    return render_template("course_template.html", content=content, comments=comments, course_id=course_id)
+
+@app.route("/comment/<course_id>",methods=["POST"])
+def comment(course_id):
+    comment_text = request.form["new_comment"]
+    author = accounts.get_user_id()
+    if accounts.is_logged_in():
+        if comments.post_comment(course_id, author, comment_text):
+            return redirect(f"/courses/{course_id}")
+        else:
+            # TODO: Error with saving comment
+            print("Failed comment saving")
+            return redirect("/")
+    else:
+        # TODO: Error Log in first
+        print("User not logged in to comment!")
+        return redirect("/")

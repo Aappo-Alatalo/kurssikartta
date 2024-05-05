@@ -6,7 +6,7 @@
     <div class="center_div">
         <div class="course_detail_card">
             <a href="/" class="back_arrow">&#8592;</a> <!-- Backwards arrow -->
-            <h1>{{ content.name }} <span style="font-size: 20px;">{{ content.credits }} op</span></h1>
+            <h1>{{ content.name }}<span style="font-size: 18px;"> {{ content.credits }} op</span></h1>
             <h3>⭐️⭐️⭐️⭐️ 4.2</h3>
             <p>{{ content.description }}</p>
             <br>
@@ -15,8 +15,8 @@
             {% if comments is not defined or comments|length < 1 %}
                 <p>Ei vielä yhtään kommenttia 😔</p>
             {% endif %}
-            <form action="#" method="POST">
-                <textarea class="comment" name="comment" cols="30" rows="1" placeholder="Kirjoita kommentti..."></textarea>
+            <form action="/comment/{{ course_id }}" method="POST">
+                <textarea class="comment" name="new_comment" cols="30" rows="1" placeholder="Kirjoita kommentti..."></textarea>
                 <div style="margin-left: 10px; margin-bottom: 20px;">
                     <button type="submit" class="button"><h3 style="margin: 1px;">Lähetä</h3></button>
                 </div>
