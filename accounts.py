@@ -4,7 +4,7 @@ from flask import session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 def is_logged_in():
-    if session["username"] != None:
+    if session["username"] != None and session["user_id"] != None:
         return True
     else:
         return False

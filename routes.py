@@ -60,8 +60,11 @@ def course_page(course_id):
 @app.route("/comment/<course_id>",methods=["POST"])
 def comment(course_id):
     comment_text = request.form["new_comment"]
-    author = accounts.get_user_id()
+    if len(comment_text) > 255 or comment_text == "":
+        print("Invalid comment")
+        return redirect(f"/courses/{course_id}")
     if accounts.is_logged_in():
+        author = accounts.get_user_id()
         if comments.post_comment(course_id, author, comment_text):
             return redirect(f"/courses/{course_id}")
         else:

@@ -20,7 +20,7 @@ CREATE TABLE comments (
     id SERIAL PRIMARY KEY,
     course_id INTEGER REFERENCES courses(id), 
     author_id INTEGER REFERENCES users(id),
-    content TEXT NOT NULL,
+    content VARCHAR(255) NOT NULL,
     post_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
