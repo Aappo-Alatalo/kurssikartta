@@ -1,5 +1,5 @@
 from app import app
-from flask import redirect, render_template, request
+from flask import redirect, render_template, request, flash
 from os import getenv
 import courses
 import accounts
@@ -57,21 +57,28 @@ def course_page(course_id):
     comments = courses.fetch_comments(course_id)
     return render_template("course_template.html", content=content, comments=comments, course_id=course_id)
 
-@app.route("/comment/<course_id>",methods=["POST"])
+@app.route("/comment/<course_id>",methods=["GET", "POST"])
 def comment(course_id):
-    comment_text = request.form["new_comment"]
-    if len(comment_text) > 255 or comment_text == "":
-        print("Invalid comment")
-        return redirect(f"/courses/{course_id}")
-    if accounts.is_logged_in():
-        author = accounts.get_user_id()
-        if comments.post_comment(course_id, author, comment_text):
-            return redirect(f"/courses/{course_id}")
+    if request.method == "POST": # Send get requests back to course page
+        if accounts.is_logged_in(): # Check user is logged in to comment
+            comment_text = request.form["new_comment"]
+            if comment_text == "":
+                flash("Kommentti ei voi olla tyhjä", "error")
+                return redirect(f"/courses/{course_id}")
+                # TODO: Tämän lisäksi client side check 
+            elif len(comment_text) > 500:
+                flash("Kommentti on liian pitkä", "error")
+                return redirect(f"/courses/{course_id}")
+
+            author = accounts.get_user_id()
+            if comments.post_comment(course_id, author, comment_text):
+                flash("Kommentti lisätty!", "success")
+                return redirect(f"/courses/{course_id}")
+            else:
+                flash("Komenttin lisäyksessä ilmeni virhe", "error")
+                return redirect(f"/courses/{course_id}")
         else:
-            # TODO: Error with saving comment
-            print("Failed comment saving")
-            return redirect("/")
+            flash("Kirjaudu sisään kommentoidaksesi!", "error")
+            return redirect(f"/courses/{course_id}")
     else:
-        # TODO: Error Log in first
-        print("User not logged in to comment!")
-        return redirect("/")
+        return redirect(f"/courses/{course_id}")

@@ -22,6 +22,20 @@ textarea:focus {
     outline-color: black;
 }
 
+.error {
+    padding: 20px;
+    background-color: #f44336; /* Red */
+    color: white;
+    margin-bottom: 15px;
+}
+
+.success {
+    padding: 20px;
+    background-color: #22f022; /* Red */
+    color: white;
+    margin-bottom: 15px;
+}
+
 .search_box {
     padding: 10px 0;
     width: 100%;
