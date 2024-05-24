@@ -16,7 +16,8 @@
                 <p>Ei vielä yhtään kommenttia 😔</p>
             {% endif %}
             <form action="/comment/{{ course_id }}" method="POST">
-                <textarea class="comment" name="new_comment" cols="30" rows="1" placeholder="Kirjoita kommentti..."></textarea>
+                <textarea id="textbox" class="comment" name="new_comment" cols="30" rows="1" placeholder="Kirjoita kommentti..."></textarea>
+                <span style="font-weight: bold;"><span id="count">0</span> / 500</span>
                 <div style="margin-left: 10px; margin-bottom: 20px;">
                     <button type="submit" class="button"><h3 style="margin: 1px;">Lähetä</h3></button>
                 </div>
@@ -32,4 +33,5 @@
             {% endif %}
         </div>
     </div>
+    <script src="../static/js/charCounter.js"></script>
 {% endblock %}
