@@ -16,10 +16,12 @@ def index():
 def login():
     username = request.form["username"]
     password = request.form["password"]
-    if accounts.login(username, password):
-        return redirect("/")
+    resp = accounts.login(username, password)
+    if resp == True:
+        return redirect(request.referrer)
     else:
-        return redirect("/")
+        flash(resp, "error")
+        return redirect(request.referrer)
         
 @app.route("/logout")
 def logout():

@@ -27,7 +27,7 @@ def login(username, password):
     user = check_username(username) # Check if username is found in the database
     if not user:
         # Invalid username
-        return False
+        return "Käyttäjätunnusta ei löydy, tarkista kirjoititko sen oikein"
     else:
         db_password = user.password
         if check_password_hash(db_password, password):
@@ -38,7 +38,7 @@ def login(username, password):
             return True
         else:
             # Invalid password
-            return False
+            return "Salasana ei kelpaa, yritä uudelleen"
         
 def register(username, password):
     if len(username) < 1:
