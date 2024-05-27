@@ -6,12 +6,18 @@
 <div class="center_div">
     <h1>Rekisteröidy</h1>
     <form action="/register" method="POST">
-        <p>Valitse käyttäjätunnus: <input type="text" name="username", autocomplete="off"></p>
-        <p>Valitse salasana: <input type="password" name="password1"></p>
+        <p>Valitse käyttäjätunnus: <input type="text" name="username" id="usernametextbox" autocomplete="off"></p>
+        <p>Valitse salasana: <input type="password" name="password1" id="passwordtextbox"> <span style="font-weight: bold;"><span id="passwordcount"></span></span></p>
         <p>Kirjoita salasana uudelleen: <input type="password" name="password2"></p>
         <input type="submit" class="button" value="Rekisteröidy">
-        <p style="color: red;">{{ message }}</p>
     </form>
+    <br>
     <p>Onko sinulla jo tili? <a href="/">Kirjaudu tästä</a></p>
 </div>
+<div class="center_div">
+    <p style="color: red;">{{ message }}</p>
+</div>
+
+<script src="../static/js/registerCharCounter.js"></script>
+
 {% endblock %}

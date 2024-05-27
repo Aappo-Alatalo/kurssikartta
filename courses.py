@@ -16,6 +16,6 @@ def fetch_all_courses():
     return db.session.execute(text(sql)).fetchall()
 
 def search_courses(query):
-    sql = "SELECT id, name, credits, description FROM courses WHERE name LIKE :query"
+    sql = "SELECT id, name, credits, description FROM courses WHERE name ILIKE :query"
     result = db.session.execute(text(sql), {"query":"%"+query+"%"})
     return result.fetchall()

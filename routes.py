@@ -36,10 +36,11 @@ def register():
         password2 = request.form["password2"]
         if password1 != password2:
             return render_template("register.html", message="Salasanat eroavat, yritä uudelleen")
-        if accounts.register(username, password1):
+        resp = accounts.register(username, password1)
+        if resp == True:
             return redirect("/")
         else:
-            return render_template("register.html", message="Rekisteröinti ei onnistunut")
+            return render_template("register.html", message=resp)
 
 @app.route("/result")
 def result():

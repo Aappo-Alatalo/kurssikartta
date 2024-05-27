@@ -1,11 +1,11 @@
 from db import db
 from sqlalchemy.sql import text
+from sqlalchemy.exc import IntegrityError
 from flask import session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 def is_logged_in():
     return True if session else False
-
 
 def get_username():
     return session["username"]
@@ -41,10 +41,10 @@ def login(username, password):
             return False
         
 def register(username, password):
-    if len(username) < 3:
-        return False
-    if len(password) < 5:
-        return False
+    if len(username) < 1:
+        return "Käyttäjätunnuksessa tulee olla vähintään yksi merkki"
+    if len(password) < 8:
+        return "Salasanan tulee olla vähintään kahdeksan merkkiä"
     
     # Insert data into database
     password_hash = generate_password_hash(password)
@@ -52,7 +52,9 @@ def register(username, password):
         sql = "INSERT INTO users (username, password, account_type) VALUES (:username, :password, 0)"
         db.session.execute(text(sql), {"username":username, "password":password_hash})
         db.session.commit()
-    except:
-        return False
+    except IntegrityError as e:
+        return "Käyttäjänimi on jo olemassa, kokeile toista käyttäjänimeä"
+    except Exception as e:
+        return "Rekisteröinnissä ilmeni yllättävä ongelma, yritä uudelleen"
     
     return login(username, password)
