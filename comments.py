@@ -8,8 +8,14 @@ def post_comment(course_id, author_id, comment):
         db.session.commit()
     except:
         return False
-
     return True
 
-
+def delete_comment(comment_id):
+    try:
+        sql = "UPDATE comments SET visible=FALSE WHERE id=:comment_id"
+        db.session.execute(text(sql), {"comment_id":comment_id})
+        db.session.commit()
+    except:
+        return False
+    return True
     

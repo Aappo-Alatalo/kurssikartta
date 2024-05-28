@@ -58,7 +58,11 @@ def courses_page():
 def course_page(course_id):
     content = courses.fetch_details(course_id)
     comments = courses.fetch_comments(course_id)
-    return render_template("course_template.html", content=content, comments=comments, course_id=course_id)
+    if accounts.is_logged_in():
+        account_type = accounts.get_account_type()
+    else:
+        account_type = 0
+    return render_template("course_template.html", content=content, comments=comments, course_id=course_id, account_type=account_type)
 
 @app.route("/comment/<course_id>",methods=["GET", "POST"])
 def comment(course_id):
@@ -84,4 +88,17 @@ def comment(course_id):
             flash("Kirjaudu sisään kommentoidaksesi!", "error")
             return redirect(f"/courses/{course_id}")
     else:
+        return redirect(f"/courses/{course_id}")
+    
+@app.route("/deletecomment/<course_id>/<comment_id>")
+def deletecomment(course_id, comment_id):
+    if accounts.is_logged_in() and accounts.get_account_type() == 1:
+        success = comments.delete_comment(comment_id)
+        if not success:
+            flash("Kommentin poistamisessa ilmeni ongelma", "error")
+
+        return redirect(f"/courses/{course_id}")
+    else:
+        # NAUHGHTY BOY
+        flash("WTF ARE YOU TRYING?", "error")
         return redirect(f"/courses/{course_id}")

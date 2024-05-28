@@ -6,14 +6,15 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    account_type INTEGER NOT NULL
+    account_type INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE courses (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     credits INTEGER NOT NULL,
-    description TEXT
+    description TEXT,
+    visible BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE comments (
@@ -21,7 +22,8 @@ CREATE TABLE comments (
     course_id INTEGER REFERENCES courses(id), 
     author_id INTEGER REFERENCES users(id),
     content VARCHAR(520) NOT NULL,
-    post_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    post_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    visible BOOLEAN DEFAULT TRUE
 );
 
 INSERT INTO users (username, password, account_type) VALUES ('aappo', 'scrypt:32768:8:1$9dSFfZSyzkeRQOnU$b2c82fac6ecd1ecff802b97f93003bc9cd4f30821fc82365ee5480942e8479901fece5ca8a2c55eecd23be339846803638d6380adfe548c42afd7a7089cab83f', 1);

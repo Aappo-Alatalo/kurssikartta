@@ -13,6 +13,12 @@ def get_username():
 def get_user_id():
     return session["user_id"]
 
+def get_account_type():
+    try:
+        return session["account_type"]
+    except:
+        return 0
+
 def logout():
     del session["user_id"]
     del session["username"]
