@@ -9,6 +9,7 @@
         <p>Valitse käyttäjätunnus: <input type="text" name="username" id="usernametextbox" autocomplete="off"></p>
         <p>Valitse salasana: <input type="password" name="password1" id="passwordtextbox"> <span style="font-weight: bold;"><span id="passwordcount"></span></span></p>
         <p>Kirjoita salasana uudelleen: <input type="password" name="password2"></p>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <input type="submit" class="button" value="Rekisteröidy">
     </form>
     <br>

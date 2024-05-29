@@ -3,9 +3,10 @@ from sqlalchemy.sql import text
 from sqlalchemy.exc import IntegrityError
 from flask import session
 from werkzeug.security import check_password_hash, generate_password_hash
+from secrets import token_hex
 
 def is_logged_in():
-    return True if session else False
+    return "user_id" in session
 
 def get_username():
     return session["username"]
@@ -23,6 +24,7 @@ def logout():
     del session["user_id"]
     del session["username"]
     del session["account_type"]
+    del session["csrf_token"]
 
 def check_username(username):
     sql = "SELECT id, username, password, account_type FROM users WHERE username=:username"
@@ -41,6 +43,7 @@ def login(username, password):
             session["user_id"] = user.id
             session["username"] = user.username
             session["account_type"] = user.account_type
+            session["csrf_token"] = token_hex(16)
             return True
         else:
             # Invalid password

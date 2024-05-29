@@ -5,13 +5,23 @@
 {% block base_block %}
     <div class="login_div">
         {% if session.username %}
-            <span><b>{{ session.username }}</b>
-            <a href="/logout"><button class="button">Kirjaudu ulos</button></a></span>
+            <div style="
+            display: grid; 
+            grid-template-columns: 1fr; 
+            justify-items: center; 
+            align-items: center;">
+                <b style="margin-bottom: 4px;">{{ session.username }}</b>
+                <form action="/logout" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                    <button type="submit" class="button">Kirjaudu ulos</button>
+                </form>
+            </div>
         {% else %}
             <div>
                 <form style="display: inline;" action="/login" method="POST">
                     <span>Tunnus: <input type="text" name="username", autocomplete="off"></span>
                     <span>Salasana: <input type="password" name="password"></span>
+                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                     <input type="submit" class="button" value="Kirjaudu">
                 </form>
                 <a href="/register"><button class="button">Rekisteröidy</button></a>

@@ -3,37 +3,55 @@
 {% block title %}{{ content.name }}{% endblock %}
 
 {% block content %}
-    <div class="center_div">
-        <div class="course_detail_card">
-            <a href="/" class="back_arrow">&#8592;</a> <!-- Backwards arrow -->
-            <h1>{{ content.name }}<span style="font-size: 18px;"> {{ content.credits }} op</span></h1>
-            <h3>⭐️⭐️⭐️⭐️ 4.2</h3>
-            <p>{{ content.description }}</p>
-            <br>
-            <h2>Kommentit:</h2>
-            <br>
-            <form action="/comment/{{ course_id }}" method="POST">
-                <textarea id="textbox" class="comment" name="new_comment" cols="30" rows="1" placeholder="Kirjoita kommentti..."></textarea>
-                <span style="font-weight: bold;"><span id="count">0</span> / 500</span>
-                <div style="margin-left: 10px; margin-bottom: 20px;">
-                    <button type="submit" class="button"><h3 style="margin: 1px;">Lähetä</h3></button>
-                </div>
-            </form>
-            <br>
-            {% if comments is defined and comments|length > 0 %}
-                {% for comment in comments %}
-                    {% if comment.visible %}
-                        <div class="comment">
-                            <h4>{{ comment.username }} <span style="font-size: 12px; color: #888;">{{ comment.post_date.strftime('%d-%m-%Y %H:%M') }}</span></h4>
-                            <p>{{ comment.content }}</p>
-                            {% if account_type == 1 %}
-                                <a href="/deletecomment/{{ course_id }}/{{ comment.id }}"><p>Delete🗑️</p></a>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
+
+    {% if content.name %}
+        <div class="center_div">
+            <div class="course_detail_card">
+                <a href="/" class="back_arrow">&#8592;</a> <!-- Backwards arrow -->
+                <h1>{{ content.name }}<span style="font-size: 18px;"> {{ content.credits }} op</span></h1>
+                <h3>⭐️⭐️⭐️⭐️ 4.2</h3>
+                <p>{{ content.description }}</p>
+                <br>
+                <h2>Kommentit:</h2>
+                <br>
+                <form action="/comment/{{ course_id }}" method="POST">
+                    <textarea id="textbox" class="comment" name="new_comment" cols="30" rows="1" placeholder="Kirjoita kommentti..."></textarea>
+                    <span style="font-weight: bold;"><span id="count">0</span> / 500</span>
+                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                    <div style="margin-left: 10px; margin-bottom: 20px;">
+                        <button type="submit" class="button"><h3 style="margin: 1px;">Lähetä</h3></button>
+                    </div>
+                </form>
+                <br>
+                {% if comments is defined and comments|length > 0 %}
+                    {% for comment in comments %}
+                        {% if comment.visible %}
+                            <div class="comment">
+                                <h4>{{ comment.username }} <span style="font-size: 12px; color: #888;">{{ comment.post_date.strftime('%d-%m-%Y %H:%M') }}</span></h4>
+                                <p>{{ comment.content }}</p>
+                                {% if account_type == 1 %}
+                                    <form action="/deletecomment/{{ course_id }}/{{ comment.id }}" method="POST">
+                                        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                                        <div style="margin-left: 10px; margin-bottom: 20px;">
+                                            <button type="submit" class="button"><h3 style="margin: 1px;">🗑️</h3></button>
+                                        </div>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
         </div>
-    </div>
-    <script src="../static/js/charCounter.js"></script>
+        <script src="../static/js/charCounter.js"></script>
+
+    {% else %}
+        <div class="center_div">
+            <div class="course_detail_card">
+                <a href="/" class="back_arrow">&#8592;</a> <!-- Backwards arrow -->
+                <h1>Tällä sivulla ei ole mitään nähtävää</h1>
+            </div>
+        </div>
+    {% endif %}
+
 {% endblock %}
