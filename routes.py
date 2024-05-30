@@ -23,6 +23,10 @@ def moderator(f):
 def page_not_found(e):
     return render_template("404.html"), 404
 
+@app.errorhandler(500)
+def internal_error(e):
+    return render_template('500.html'), 500
+
 @app.route("/")
 def index():
     fetched_courses = courses.fetch_all_courses()
@@ -86,6 +90,12 @@ def result():
 
 @app.route("/courses/<course_id>") # Course details live here
 def course_page(course_id):
+    try: # Fix SQL Data error
+        if int(course_id) > 999999999:
+            return redirect("/")
+    except:
+        return redirect("/")
+    
     content = courses.fetch_details(course_id)
     comments = courses.fetch_comments(course_id)
     if accounts.is_logged_in():
