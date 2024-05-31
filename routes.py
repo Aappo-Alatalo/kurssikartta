@@ -29,7 +29,7 @@ def internal_error(e):
 
 @app.route("/")
 def index():
-    fetched_courses = courses.fetch_all_courses()
+    fetched_courses = courses.search_courses("")
 
     accounts.session["csrf_token"] = token_hex(16)
     return render_template("index.html", fetched_courses=fetched_courses)
@@ -97,6 +97,7 @@ def course_page(course_id):
         return redirect("/")
     
     content = courses.fetch_details(course_id)
+    average_rating = courses.fetch_average_rating(course_id)[0]
     comments = courses.fetch_comments(course_id)
     if accounts.is_logged_in():
         account_type = accounts.get_account_type()
@@ -104,7 +105,7 @@ def course_page(course_id):
         account_type = 0
 
     accounts.session["csrf_token"] = token_hex(16)
-    return render_template("course_template.html", content=content, comments=comments, course_id=course_id, account_type=account_type)
+    return render_template("course_template.html", content=content, average_rating=average_rating, comments=comments, course_id=course_id, account_type=account_type)
 
 @app.route("/comment/<course_id>",methods=["GET", "POST"])
 def comment(course_id):
@@ -114,7 +115,7 @@ def comment(course_id):
                 flash("CSRF Token error", "error")
                 return redirect(f"/courses/{course_id}")
             
-            comment_text = request.form["new_comment"]
+            comment_text = request.form.get("new_comment")
             if comment_text == "":
                 flash("Kommentti ei voi olla tyhjä", "error")
                 return redirect(f"/courses/{course_id}")
@@ -123,15 +124,25 @@ def comment(course_id):
                 flash("Kommentti on liian pitkä", "error")
                 return redirect(f"/courses/{course_id}")
 
+            rating = request.form["rating"]
+            if not rating:
+                flash("Muista lisätä arvosteluusi tähdet!", "error")
+                return redirect(f"/courses/{course_id}")
+            elif rating not in ["1", "2", "3", "4", "5"]:
+                flash("Tähtiarvostelussa ilmeni virhe", "error")
+                return redirect(f"/courses/{course_id}")
+            
+            rating = int(rating)
+            
             author = accounts.get_user_id()
-            if comments.post_comment(course_id, author, comment_text):
-                flash("Kommentti lisätty!", "success")
+            if comments.post_comment(course_id, author, rating, comment_text):
+                flash("Arvostelu lisätty!", "success")
                 return redirect(f"/courses/{course_id}")
             else:
-                flash("Komenttin lisäyksessä ilmeni virhe", "error")
+                flash("Arvostelun lisäyksessä ilmeni virhe", "error")
                 return redirect(f"/courses/{course_id}")
         else:
-            flash("Kirjaudu sisään kommentoidaksesi!", "error")
+            flash("Kirjaudu sisään arvostellaksesi kurssin!", "error")
             return redirect(f"/courses/{course_id}")
     else:
         return redirect(f"/courses/{course_id}")
@@ -145,7 +156,7 @@ def deletecomment(course_id, comment_id):
 
     success = comments.delete_comment(comment_id)
     if success:
-        flash("Kommentti poistettu", "success")
+        flash("Arvio poistettu", "success")
     else:
-        flash("Kommentin poistamisessa ilmeni ongelma", "error")
+        flash("Arvion poistamisessa ilmeni ongelma", "error")
     return redirect(f"/courses/{course_id}")

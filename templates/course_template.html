@@ -9,25 +9,51 @@
             <div class="course_detail_card">
                 <a href="/" class="back_arrow">&#8592;</a> <!-- Backwards arrow -->
                 <h1>{{ content.name }}<span style="font-size: 18px;"> {{ content.credits }} op</span></h1>
-                <h3>⭐️⭐️⭐️⭐️ 4.2</h3>
+                <h3>
+                    {% if average_rating %}
+                        {{ average_rating|round(1) }}
+                        {% for i in range(average_rating|round(0)|int) %}
+                            <i class="bx bxs-star star" style="color: #FFBD13;"></i>
+                        {% endfor %}
+                    {% else %}
+                        0.0 Ei arvosteluja
+                    {% endif %}
+                </h3>
                 <p>{{ content.description }}</p>
                 <br>
-                <h2>Kommentit:</h2>
+                <h2>Arvostelut:</h2>
                 <br>
-                <form action="/comment/{{ course_id }}" method="POST">
-                    <textarea id="textbox" class="comment" name="new_comment" cols="30" rows="1" placeholder="Kirjoita kommentti..."></textarea>
-                    <span style="font-weight: bold;"><span id="count">0</span> / 500</span>
-                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-                    <div style="margin-left: 10px; margin-bottom: 20px;">
-                        <button type="submit" class="button"><h3 style="margin: 1px;">Lähetä</h3></button>
-                    </div>
-                </form>
+                <div>
+                    <form id="comment-form" action="/comment/{{ course_id }}" method="POST">
+                        <div class="rating">
+                            <input type="number" name="rating" hidden>
+                            <i class='bx bx-star star' style="--i: 0;"></i>
+                            <i class='bx bx-star star' style="--i: 1;"></i>
+                            <i class='bx bx-star star' style="--i: 2;"></i>
+                            <i class='bx bx-star star' style="--i: 3;"></i>
+                            <i class='bx bx-star star' style="--i: 4;"></i>
+                        </div>
+                        <input id="hidden-input" type="text" name="new_comment" hidden>
+                        <span id="textbox" class="editable-span" contenteditable="true" data-placeholder="Kirjoita arvostelu..."></span>
+                        <span style="font-weight: bold;"><span id="count">0</span> / 500</span>
+                        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                        <div style="margin-left: 10px; margin-bottom: 20px;">
+                            <button type="submit" class="button"><h3 style="margin: 1px;">Lähetä</h3></button>
+                        </div>
+                        <script src="../static/js/rating.js"></script>
+                    </form>
+                </div>
                 <br>
                 {% if comments is defined and comments|length > 0 %}
                     {% for comment in comments %}
                         {% if comment.visible %}
                             <div class="comment">
                                 <h4>{{ comment.username }} <span style="font-size: 12px; color: #888;">{{ comment.post_date.strftime('%d-%m-%Y %H:%M') }}</span></h4>
+                                <span>
+                                {% for i in range(comment.rating) %}
+                                    <i class="bx bxs-star star" style="color: #FFBD13;"></i>
+                                {% endfor %}
+                                </span>
                                 <p>{{ comment.content }}</p>
                                 {% if account_type == 1 %}
                                     <form action="/deletecomment/{{ course_id }}/{{ comment.id }}" method="POST">

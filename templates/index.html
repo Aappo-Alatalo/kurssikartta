@@ -14,7 +14,17 @@
                     <a href="courses/{{ course.id }}" class="course_card">
                         <h1>{{ course.name }}</h1>
                         <h2>{{ course.credits }} op</h2>
-                        <span>⭐️ {{ '%0.1f'|format(range(1, 5)|random) }}</span>
+                        <span>
+                        {% if course.average_rating %}
+                            {{ course.average_rating|round(1) }}
+                            {% for i in range(course.average_rating|round(0)|int) %}
+                                <i class="bx bxs-star star" style="color: #FFBD13;"></i>
+                            {% endfor %}
+                        {% else %}
+                        <i class='bx bx-star star' style="--i: 0;"></i>
+                        Ei arvosteluja
+                        {% endif %}
+                        </span>
                         <p>{{ course.description }}</p>
                     </a>
                 {% endif %}

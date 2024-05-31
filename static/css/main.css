@@ -10,16 +10,23 @@ body {
     padding: 0;
 }
 
-textarea {
+.editable-span {
+    border: 2px solid gray;
+    border-radius: 10px;
     padding: 12px 20px;
-    resize: none;
-    outline: auto;
-    outline-color: gray;
-    width: auto;
+    width: 38rem;
+    min-height: 20px;
+    display: inline-block;
+    cursor: text;
+    margin: 10px;
 }
-
-textarea:focus {
-    outline-color: black;
+.editable-span:empty:before {
+    content: attr(data-placeholder);
+    color: #888;
+}
+.editable-span:focus:empty:before {
+    content: "";
+    border-color: black;
 }
 
 .error {
@@ -140,7 +147,7 @@ textarea:focus {
 }
 
 .comment {
-    width: 60%;
+    width: 70%;
     border-radius: 10px;
     height: auto;
     padding-left: 10px;
@@ -155,16 +162,52 @@ textarea:focus {
 }
 
 #hideMe {
-    -webkit-animation: cssAnimation 5s forwards; 
-    animation: cssAnimation 5s forwards;
+    -webkit-animation: flashMessageAnim 5s forwards; 
+    animation: flashMessageAnim 5s forwards;
 }
-@keyframes cssAnimation {
+@keyframes flashMessageAnim {
     0%   {opacity: 1;}
     90%  {opacity: 1;}
     100% {opacity: 0;}
 }
-@-webkit-keyframes cssAnimation {
+@-webkit-keyframes flashMessageAnim {
     0%   {opacity: 1;}
     90%  {opacity: 1;}
     100% {opacity: 0;}
+}
+
+.rating {
+	display: flex;
+	grid-gap: .5rem;
+	font-size: 2rem;
+	color: #FFBD13;
+	margin-bottom: 2rem;
+    margin-left: 1rem;
+}
+.rating .star {
+	cursor: pointer;
+    transition: 0.15s;
+}
+.rating .star.active {
+	opacity: 0;
+	animation: starAnim .5s calc(var(--i) * .1s) ease-in-out forwards;
+}
+
+@keyframes starAnim {
+	0% {
+		opacity: 0;
+		transform: scale(1);
+	}
+	50% {
+		opacity: 1;
+		transform: scale(1.2);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+.rating .star:hover {
+	transform: scale(1.4);
 }

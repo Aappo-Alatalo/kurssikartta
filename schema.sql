@@ -21,6 +21,7 @@ CREATE TABLE comments (
     id SERIAL PRIMARY KEY,
     course_id INTEGER REFERENCES courses(id), 
     author_id INTEGER REFERENCES users(id),
+    rating INTEGER NOT NULL,
     content VARCHAR(520) NOT NULL,
     post_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     visible BOOLEAN DEFAULT TRUE
@@ -33,5 +34,5 @@ INSERT INTO courses (name, credits, description) VALUES ('Ohjelmoinnin jatkokurs
 INSERT INTO courses (name, credits, description) VALUES ('Tietokone ja internet', 5, 'Kurssilla käsitellään vähän kaikenlaista ja kirjoitellaan esseitä 4-6 hengen ryhmissä.');
 INSERT INTO courses (name, credits, description) VALUES ('Tietokantojen perusteet', 5, 'Opiskelijan ensimmäinen kosketus tietokantoihin. Kurssilla on käytössä SQLite3.');
 
-INSERT INTO comments (course_id, author_id, content) VALUES (1, 1, 'Hei maailma! Lorem ipsum und so weiter.');
-INSERT INTO comments (course_id, author_id, content) VALUES (1, 1, 'Tää on jo mun toka kommentti LOL!');
+INSERT INTO comments (course_id, author_id, rating, content) VALUES (1, 1, 4, 'Kurssi oli mielestäni onnistunut, sillä jady jada.');
+INSERT INTO comments (course_id, author_id, rating, content) VALUES (1, 1, 3, 'Oli tylsää');
