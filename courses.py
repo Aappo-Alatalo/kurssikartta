@@ -1,5 +1,6 @@
 from db import db
 from sqlalchemy.sql import text
+from sqlalchemy.exc import IntegrityError
 
 def fetch_average_rating(course_id):
     sql = "SELECT AVG(rating) FROM comments WHERE visible=TRUE AND course_id=:course_id"
@@ -40,3 +41,22 @@ def search_courses(query):
     """
     result = db.session.execute(text(sql), {"query":"%"+query+"%"}).fetchall()
     return result
+
+def enroll(course_id, user_id):
+    try:
+        sql = "INSERT INTO enrollments (course_id, user_id) VALUES (:course_id, :user_id)"
+        db.session.execute(text(sql), {"course_id":course_id, "user_id":user_id})
+        db.session.commit()
+        return True
+    except IntegrityError as e:
+        return "Olet jo ilmoittautunut kurssille"
+    except:
+        return "Ilmoittautumisessa ilmeni ongelma"
+    
+def fetch_enrollments(course_id):
+    try:
+        sql = "SELECT COUNT(id) FROM enrollments WHERE course_id = :course_id"
+        result = db.session.execute(text(sql), {"course_id":course_id}).fetchone()
+        return result[0]
+    except:
+        return "Virhe ilmoittautumisten lataamisessa"

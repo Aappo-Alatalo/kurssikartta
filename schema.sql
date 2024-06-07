@@ -1,6 +1,8 @@
 DROP TABLE IF EXISTS courses CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS comments CASCADE;
+DROP TABLE IF EXISTS suggestions CASCADE;
+DROP TABLE IF EXISTS enrollments CASCADE;
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -25,6 +27,24 @@ CREATE TABLE comments (
     content VARCHAR(520) NOT NULL,
     post_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     visible BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE suggestions (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    credits INTEGER NOT NULL,
+    description TEXT,
+    user_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending'
+);
+
+CREATE TABLE enrollments (
+    id SERIAL PRIMARY KEY,
+    course_id INTEGER REFERENCES courses(id),
+    user_id INTEGER REFERENCES users(id),
+    enrollment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_course_user UNIQUE (course_id, user_id)
 );
 
 INSERT INTO users (username, password, account_type) VALUES ('aappo', 'scrypt:32768:8:1$9dSFfZSyzkeRQOnU$b2c82fac6ecd1ecff802b97f93003bc9cd4f30821fc82365ee5480942e8479901fece5ca8a2c55eecd23be339846803638d6380adfe548c42afd7a7089cab83f', 1);

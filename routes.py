@@ -99,13 +99,14 @@ def course_page(course_id):
     content = courses.fetch_details(course_id)
     average_rating = courses.fetch_average_rating(course_id)[0]
     comments = courses.fetch_comments(course_id)
+    enrollments = courses.fetch_enrollments(course_id)
     if accounts.is_logged_in():
         account_type = accounts.get_account_type()
     else:
         account_type = 0
 
     accounts.session["csrf_token"] = token_hex(16)
-    return render_template("course_template.html", content=content, average_rating=average_rating, comments=comments, course_id=course_id, account_type=account_type)
+    return render_template("course_template.html", content=content, average_rating=average_rating, comments=comments, course_id=course_id, account_type=account_type, enrollments=enrollments)
 
 @app.route("/comment/<course_id>",methods=["GET", "POST"])
 def comment(course_id):
@@ -160,3 +161,30 @@ def deletecomment(course_id, comment_id):
     else:
         flash("Arvion poistamisessa ilmeni ongelma", "error")
     return redirect(f"/courses/{course_id}")
+
+@app.route("/enroll",methods=["POST"])
+def enroll(): 
+    course_id = request.form["course_id"]
+    if not course_id or not course_id.isnumeric():
+        flash("Kurssia ei ole", "error")
+        return redirect("/")
+    course_id = int(course_id)
+
+    if accounts.is_logged_in():
+        if accounts.session["csrf_token"] != request.form["csrf_token"]:
+            flash("CSRF Token error", "error")
+            return redirect(f"/courses/{course_id}")
+        
+        user_id = accounts.get_user_id()
+        response = courses.enroll(course_id, user_id)
+        if response == True:
+            flash("Ilmoittautuminen onnistui!", "success")
+            return redirect(f"/courses/{course_id}")
+        else:
+            flash(response, "error")
+            return redirect(f"courses/{course_id}")
+
+    else:
+        flash("Kirjaudu sisään ilmoittatuaksesi kurssille", "error")
+        return redirect(f"courses/{course_id}")
+        
