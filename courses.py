@@ -60,3 +60,32 @@ def fetch_enrollments(course_id):
         return result[0]
     except:
         return "Virhe ilmoittautumisten lataamisessa"
+    
+def is_enrolled(course_id, user_id):
+    try:
+        sql = """
+                SELECT EXISTS(
+                    SELECT 1
+                    FROM enrollments
+                    WHERE course_id = :course_id
+                    AND
+                    user_id = :user_id
+                )
+                """
+        result = db.session.execute(text(sql), {"course_id":course_id, "user_id":user_id}).fetchone()
+        return result[0]
+    except:
+        return "Virhe ilmoittautumistietojen lataamisessa"
+    
+def cancel_enrollment(course_id, user_id):
+    try:
+        sql = """
+                DELETE FROM enrollments
+                WHERE course_id = :course_id AND user_id = :user_id
+                """
+        db.session.execute(text(sql), {"course_id":course_id, "user_id":user_id})
+        db.session.commit()
+        return True
+    except:
+        db.session.rollback()
+        return False

@@ -24,12 +24,23 @@
                 </h3>
                 <span>
                 <h4>Ilmoittautumisia: <span style="font-size: large;">{{ enrollments }}</span> <span class="tooltip">(?)<span class="tooltiptext tooltip-right">Epävirallinen, Kurssikartan käyttäjistä koostuva luku</span></span></h4>
-                <form action="/enroll" method="POST">
-                    Osallistutko kurssille?
+                {% if is_enrolled == True %}
+                <form action="/cancelenrollment" method="POST">
+                    Olet ilmoittautunut kurssille
                     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                     <input type="hidden" name="course_id" value="{{ course_id }}">
-                    <button type="submit" class="button">ILMOITTAUDU</button>
+                    <button type="submit" class="button">Peru ilmoittautuminen</button>
                 </form>
+                {% elif is_enrolled == False %}
+                    <form action="/enroll" method="POST">
+                        Osallistutko kurssille?
+                        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                        <input type="hidden" name="course_id" value="{{ course_id }}">
+                        <button type="submit" class="button">ILMOITTAUDU</button>
+                    </form>
+                {% else %}
+                    <p>{{is_enrolled}}</p>
+                {% endif %}
                 </span>
                 <br>
                 <h2>Arvostelut:</h2>

@@ -100,13 +100,23 @@ def course_page(course_id):
     average_rating = courses.fetch_average_rating(course_id)[0]
     comments = courses.fetch_comments(course_id)
     enrollments = courses.fetch_enrollments(course_id)
+    is_enrolled = "Kirjaudu sisään ilmoittautuaksesi kurssille"
     if accounts.is_logged_in():
         account_type = accounts.get_account_type()
+        user_id = accounts.get_user_id()
+        is_enrolled = courses.is_enrolled(course_id, user_id)
     else:
         account_type = 0
 
     accounts.session["csrf_token"] = token_hex(16)
-    return render_template("course_template.html", content=content, average_rating=average_rating, comments=comments, course_id=course_id, account_type=account_type, enrollments=enrollments)
+    return render_template("course_template.html",
+                            content=content,
+                            average_rating=average_rating,
+                            comments=comments, course_id=course_id,
+                            account_type=account_type,
+                            enrollments=enrollments,
+                            is_enrolled=is_enrolled
+                            )
 
 @app.route("/comment/<course_id>",methods=["GET", "POST"])
 def comment(course_id):
@@ -150,7 +160,7 @@ def comment(course_id):
     
 @app.route("/deletecomment/<course_id>/<comment_id>",methods=["POST"])
 @moderator
-def deletecomment(course_id, comment_id):
+def delete_comment(course_id, comment_id):
     if accounts.session["csrf_token"] != request.form["csrf_token"]:
         flash("CSRF Token error", "error")
         return redirect(f"/courses/{course_id}")
@@ -188,3 +198,28 @@ def enroll():
         flash("Kirjaudu sisään ilmoittatuaksesi kurssille", "error")
         return redirect(f"courses/{course_id}")
         
+@app.route("/cancelenrollment",methods=["POST"])
+def cancel_enrollment():
+    course_id = request.form["course_id"]
+    if not course_id or not course_id.isnumeric():
+        flash("Kurssia ei ole", "error")
+        return redirect("/")
+    course_id = int(course_id)
+
+    if accounts.is_logged_in():
+        if accounts.session["csrf_token"] != request.form["csrf_token"]:
+            flash("CSRF Token error", "error")
+            return redirect(f"/courses/{course_id}")
+        
+        user_id = accounts.get_user_id()
+        response = courses.cancel_enrollment(course_id, user_id)
+        if response == True:
+            flash("Ilmoittautumisen peruminen onnistui!", "success")
+            return redirect(f"/courses/{course_id}")
+        else:
+            flash("Ilmoittatumisen peruminen epäonnistui", "error")
+            return redirect(f"courses/{course_id}")
+
+    else:
+        flash("Kirjaudu sisään peruaksesi kurssi-ilmoittautumisesi", "error")
+        return redirect(f"courses/{course_id}")
