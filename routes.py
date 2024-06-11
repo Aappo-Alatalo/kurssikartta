@@ -29,7 +29,7 @@ def internal_error(e):
 
 @app.route("/")
 def index():
-    fetched_courses = courses.search_courses("")
+    fetched_courses = courses.search_courses("", "trending")
 
     accounts.session["csrf_token"] = token_hex(16)
     return render_template("index.html", fetched_courses=fetched_courses)
@@ -85,7 +85,11 @@ def register():
 @app.route("/result")
 def result():
     query = request.args["query"]
-    fetched_courses = courses.search_courses(query)
+    accounts.session["latest_search"] = query # Save query for smoother UI
+    sort = request.args["sort"]
+    accounts.session["latest_sort"] = sort # Save sort for smoother UI
+
+    fetched_courses = courses.search_courses(query, sort)
     return render_template("index.html", fetched_courses=fetched_courses)
 
 @app.route("/courses/<course_id>") # Course details live here

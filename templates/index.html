@@ -5,14 +5,44 @@
     <div class="center_div">
         <h1>Kurssikartta.fi</h1>
         <form style="min-width: 25%; width: auto;" action="/result" method="GET">
-            <input type="text" class="search_box" name="query", placeholder="Etsi kurssia 🔍", autocomplete="off">
+            <div style="min-width: 25%; width: auto;">
+                <input type="text" class="search_box" name="query", value="{{ session.latest_search }}" placeholder="Etsi kurssia 🔍", autocomplete="off">
+            </div>
+            
+            <div class="sort_div">
+                <label for="sort_filter">
+                    <i class='bx bx-filter-alt'></i>
+                    <p>Järjestys:</p>
+                </label>
+                <label for="trending">
+                    <input type="radio" id="trending" name="sort" value="trending" onchange="this.form.submit()" checked>
+                    Trendaavuus <i class='bx bxs-hot' style='color:#e75b0e' ></i>
+                </label><br>
+                <label for="toprated">
+                    <input type="radio" id="toprated" name="sort" value="toprated" onchange="this.form.submit()">
+                    Arvostelut <i class="bx bxs-star star" style="color: #FFBD13;"></i>
+                </label><br>
+                <label for="asc">
+                    <input type="radio" id="asc" name="sort" value="asc" onchange="this.form.submit()">
+                    Aakkosjärjestys
+                </label>
+            </div>
+
         </form>
+        <script src="../static/js/sortChecker.js"></script>
+        <br>
         <br>
         {% if fetched_courses is defined and fetched_courses|length > 0 %}
             {% for course in fetched_courses %}
                 {% if course.visible %}
                     <a href="courses/{{ course.id }}" class="course_card">
-                        <h1>{{ course.name }}</h1>
+                        <h1>{{ course.name }} 
+                            
+                            {% if course.is_trending %}
+                            <i class='bx bxs-hot bx-tada' style='color:#e75b0e; font-size: xx-large;'></i>
+                            {% endif %}
+
+                        </h1>
                         <h2>{{ course.credits }} op</h2>
                         <span>
                         {% if course.average_rating %}

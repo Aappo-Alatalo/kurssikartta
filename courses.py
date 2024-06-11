@@ -17,7 +17,17 @@ def fetch_comments(course_id):
     result = db.session.execute(text(sql), {"course_id":course_id}).fetchall()
     return result
 
-def search_courses(query):
+def search_courses(query, sort):
+    if sort == "asc":
+        return fetch_courses_asc(query)
+    elif sort == "toprated":
+        return fetch_courses_toprated(query)
+    elif sort == "trending":
+        return fetch_courses_trending(query)
+    else:
+        return None
+    
+def fetch_courses_toprated(query):
     sql = """
     SELECT 
         A.id, 
@@ -25,9 +35,13 @@ def search_courses(query):
         A.credits, 
         A.description, 
         A.visible, 
-        AVG(B.rating) AS average_rating
+        AVG(B.rating) AS average_rating,
+        COUNT(C.id) AS enrollments_last_7_weeks,
+        COUNT(C.id) > 0 AS is_trending
     FROM 
         courses A
+    LEFT JOIN 
+        enrollments C ON A.id = C.course_id AND C.enrollment_date >= NOW() - INTERVAL '7 weeks'
     LEFT JOIN 
         comments B ON A.id = B.course_id AND B.visible = TRUE
     WHERE
@@ -37,7 +51,71 @@ def search_courses(query):
         A.name, 
         A.credits, 
         A.description, 
-        A.visible;
+        A.visible
+    ORDER BY 
+        COALESCE(AVG(B.rating), 0) DESC
+    """
+    result = db.session.execute(text(sql), {"query":"%"+query+"%"}).fetchall()
+    return result
+
+def fetch_courses_trending(query):
+    sql = """
+    SELECT 
+        A.id, 
+        A.name, 
+        A.credits, 
+        A.description, 
+        A.visible, 
+        AVG(B.rating) AS average_rating,
+        COUNT(C.id) AS enrollments_last_7_weeks,
+        COUNT(C.id) > 0 AS is_trending
+    FROM 
+        courses A
+    LEFT JOIN 
+        enrollments C ON A.id = C.course_id AND C.enrollment_date >= NOW() - INTERVAL '7 weeks'
+    LEFT JOIN 
+        comments B ON A.id = B.course_id AND B.visible = TRUE
+    WHERE
+        A.name ILIKE :query
+    GROUP BY 
+        A.id, 
+        A.name, 
+        A.credits, 
+        A.description, 
+        A.visible
+    ORDER BY 
+        COUNT(C.id) DESC
+    """
+    result = db.session.execute(text(sql), {"query":"%"+query+"%"}).fetchall()
+    return result
+
+def fetch_courses_asc(query):
+    sql = """
+    SELECT 
+        A.id, 
+        A.name, 
+        A.credits, 
+        A.description, 
+        A.visible, 
+        AVG(B.rating) AS average_rating,
+        COUNT(C.id) AS enrollments_last_7_weeks,
+        COUNT(C.id) > 0 AS is_trending
+    FROM 
+        courses A
+    LEFT JOIN 
+        enrollments C ON A.id = C.course_id AND C.enrollment_date >= NOW() - INTERVAL '7 weeks'
+    LEFT JOIN 
+        comments B ON A.id = B.course_id AND B.visible = TRUE
+    WHERE
+        A.name ILIKE :query
+    GROUP BY 
+        A.id, 
+        A.name, 
+        A.credits, 
+        A.description, 
+        A.visible
+    ORDER BY 
+        A.name ASC
     """
     result = db.session.execute(text(sql), {"query":"%"+query+"%"}).fetchall()
     return result

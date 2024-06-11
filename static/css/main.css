@@ -69,6 +69,25 @@ body {
     margin-bottom: 70px;
 }
 
+.sort_div {
+    justify-items: center; 
+    align-items: center;
+    margin-top: 15px;
+}
+
+.sort_div label {
+    display: flex;
+    align-items: center;
+}
+
+.sort_div i {
+    margin-left: 2px;
+}
+
+.sort_div span {
+    margin-right: 10px;
+}
+
 .course_card {
     display:inline-table;
     width: 45%;
