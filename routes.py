@@ -10,6 +10,7 @@ import suggestions
 
 app.secret_key = getenv("SECRET_KEY")
 
+
 def moderator(f):
     @wraps(f)
     def decorated_func(*args, **kwargs):
@@ -18,15 +19,19 @@ def moderator(f):
         else:
             flash("403 Access denied", "error")
             return redirect("/")
+
     return decorated_func
+
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html"), 404
 
+
 @app.errorhandler(500)
 def internal_error(e):
-    return render_template('500.html'), 500
+    return render_template("500.html"), 500
+
 
 @app.route("/")
 def index():
@@ -35,13 +40,14 @@ def index():
     accounts.session["csrf_token"] = token_hex(16)
     return render_template("index.html", fetched_courses=fetched_courses)
 
-@app.route("/login",methods=["GET", "POST"])
+
+@app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         if accounts.session["csrf_token"] != request.form["csrf_token"]:
             flash("CSRF Token error", "error")
             return redirect("/")
-        
+
         username = request.form["username"]
         password = request.form["password"]
         resp = accounts.login(username, password)
@@ -52,17 +58,19 @@ def login():
             return redirect(request.referrer)
     else:
         return redirect("/")
-        
-@app.route("/logout",methods=["POST"])
+
+
+@app.route("/logout", methods=["POST"])
 def logout():
     if accounts.session["csrf_token"] != request.form["csrf_token"]:
         flash("CSRF Token error", "error")
         return redirect("/")
-    
+
     accounts.logout()
     return redirect("/")
 
-@app.route("/register",methods=["GET", "POST"])
+
+@app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
         accounts.session["csrf_token"] = token_hex(16)
@@ -76,31 +84,35 @@ def register():
         password1 = request.form["password1"]
         password2 = request.form["password2"]
         if password1 != password2:
-            return render_template("register.html", message="Salasanat eroavat, yritä uudelleen")
+            return render_template(
+                "register.html", message="Salasanat eroavat, yritä uudelleen"
+            )
         resp = accounts.register(username, password1)
         if resp == True:
             return redirect("/")
         else:
             return render_template("register.html", message=resp)
 
+
 @app.route("/result")
 def result():
     query = request.args["query"]
-    accounts.session["latest_search"] = query # Save query for smoother UI
+    accounts.session["latest_search"] = query  # Save query for smoother UI
     sort = request.args["sort"]
-    accounts.session["latest_sort"] = sort # Save sort for smoother UI
+    accounts.session["latest_sort"] = sort  # Save sort for smoother UI
 
     fetched_courses = courses.search_courses(query, sort)
     return render_template("index.html", fetched_courses=fetched_courses)
 
-@app.route("/courses/<course_id>") # Course details live here
+
+@app.route("/courses/<course_id>")  # Course details live here
 def course_page(course_id):
-    try: # Fix SQL Data error
+    try:  # Fix SQL Data error
         if int(course_id) > 999999999:
             return redirect("/")
     except:
         return redirect("/")
-    
+
     content = courses.fetch_details(course_id)
     average_rating = courses.fetch_average_rating(course_id)[0]
     comments = courses.fetch_comments(course_id)
@@ -114,29 +126,31 @@ def course_page(course_id):
         account_type = 0
 
     accounts.session["csrf_token"] = token_hex(16)
-    return render_template("course_template.html",
-                            content=content,
-                            average_rating=average_rating,
-                            comments=comments, 
-                            course_id=course_id,
-                            account_type=account_type,
-                            enrollments=enrollments,
-                            is_enrolled=is_enrolled
-                            )
+    return render_template(
+        "course_template.html",
+        content=content,
+        average_rating=average_rating,
+        comments=comments,
+        course_id=course_id,
+        account_type=account_type,
+        enrollments=enrollments,
+        is_enrolled=is_enrolled,
+    )
 
-@app.route("/comment/<course_id>",methods=["GET", "POST"])
+
+@app.route("/comment/<course_id>", methods=["GET", "POST"])
 def comment(course_id):
-    if request.method == "POST": # Send get requests back to course page
-        if accounts.is_logged_in(): # Check user is logged in to comment
+    if request.method == "POST":  # Send get requests back to course page
+        if accounts.is_logged_in():  # Check user is logged in to comment
             if accounts.session["csrf_token"] != request.form["csrf_token"]:
                 flash("CSRF Token error", "error")
                 return redirect(f"/courses/{course_id}")
-            
+
             comment_text = request.form.get("new_comment")
             if comment_text == "":
                 flash("Kommentti ei voi olla tyhjä", "error")
                 return redirect(f"/courses/{course_id}")
-                # TODO: Tämän lisäksi client side check 
+                # TODO: Tämän lisäksi client side check
             elif len(comment_text) > 500:
                 flash("Kommentti on liian pitkä", "error")
                 return redirect(f"/courses/{course_id}")
@@ -148,9 +162,9 @@ def comment(course_id):
             elif rating not in ["1", "2", "3", "4", "5"]:
                 flash("Tähtiarvostelussa ilmeni virhe", "error")
                 return redirect(f"/courses/{course_id}")
-            
+
             rating = int(rating)
-            
+
             author = accounts.get_user_id()
             if comments.post_comment(course_id, author, rating, comment_text):
                 flash("Arvostelu lisätty!", "success")
@@ -163,8 +177,9 @@ def comment(course_id):
             return redirect(f"/courses/{course_id}")
     else:
         return redirect(f"/courses/{course_id}")
-    
-@app.route("/deletecomment/<course_id>/<comment_id>",methods=["POST"])
+
+
+@app.route("/deletecomment/<course_id>/<comment_id>", methods=["POST"])
 @moderator
 def delete_comment(course_id, comment_id):
     if accounts.session["csrf_token"] != request.form["csrf_token"]:
@@ -178,8 +193,9 @@ def delete_comment(course_id, comment_id):
         flash("Arvion poistamisessa ilmeni ongelma", "error")
     return redirect(f"/courses/{course_id}")
 
-@app.route("/enroll",methods=["POST"])
-def enroll(): 
+
+@app.route("/enroll", methods=["POST"])
+def enroll():
     course_id = request.form["course_id"]
     if not course_id or not course_id.isnumeric():
         flash("Kurssia ei ole", "error")
@@ -190,7 +206,7 @@ def enroll():
         if accounts.session["csrf_token"] != request.form["csrf_token"]:
             flash("CSRF Token error", "error")
             return redirect(f"/courses/{course_id}")
-        
+
         user_id = accounts.get_user_id()
         response = courses.enroll(course_id, user_id)
         if response == True:
@@ -203,8 +219,9 @@ def enroll():
     else:
         flash("Kirjaudu sisään ilmoittatuaksesi kurssille", "error")
         return redirect(f"courses/{course_id}")
-        
-@app.route("/cancelenrollment",methods=["POST"])
+
+
+@app.route("/cancelenrollment", methods=["POST"])
 def cancel_enrollment():
     course_id = request.form["course_id"]
     if not course_id or not course_id.isnumeric():
@@ -216,7 +233,7 @@ def cancel_enrollment():
         if accounts.session["csrf_token"] != request.form["csrf_token"]:
             flash("CSRF Token error", "error")
             return redirect(f"/courses/{course_id}")
-        
+
         user_id = accounts.get_user_id()
         response = courses.cancel_enrollment(course_id, user_id)
         if response == True:
@@ -229,11 +246,12 @@ def cancel_enrollment():
     else:
         flash("Kirjaudu sisään peruaksesi kurssi-ilmoittautumisesi", "error")
         return redirect(f"courses/{course_id}")
-    
+
+
 @app.route("/createsuggestion/", methods=["GET", "POST"])
 def create_suggestion():
     if request.method == "GET":
-        accounts.session["csrf_token"] = token_hex(16) # Renew Token for extra safety
+        accounts.session["csrf_token"] = token_hex(16)  # Renew Token for extra safety
         return render_template("createsuggestion.html")
     elif request.method == "POST":
         if accounts.session["csrf_token"] != request.form["csrf_token"]:
@@ -254,17 +272,17 @@ def create_suggestion():
         if len(title) < 1:
             flash("Kurssin nimi on liian lyhyt", "error")
             return redirect("/createsuggestion")
-        
+
         if not op.isnumeric():
             flash("Opintopisteiden tulee olla numero", "error")
             return redirect("/createsuggestion")
         else:
             op = int(op)
-        
+
         if len(description) < 10:
             flash("Kurssin kuvaus on liian lyhyt", "error")
             return redirect("/createsuggestion")
-        
+
         resp = suggestions.create_suggestion(title, op, description, user_id)
         if resp == True:
             flash("Kurssiehdotus lisätty onnistuneesti", "success")
@@ -273,7 +291,8 @@ def create_suggestion():
             flash("Ongelma ehdotuksen luomisessa", "error")
             return redirect("/createsuggestion")
 
-@app.route("/moderatorpanel",methods=["GET", "POST"])
+
+@app.route("/moderatorpanel", methods=["GET", "POST"])
 @moderator
 def moderatorpanel():
     if request.method == "GET":
@@ -283,13 +302,14 @@ def moderatorpanel():
             return redirect("/")
         return render_template("moderatorpanel.html", suggestions=fetched_suggestions)
 
-@app.route("/remove-suggestion",methods=["POST"])
+
+@app.route("/remove-suggestion", methods=["POST"])
 @moderator
 def remove_suggestion():
     if accounts.session["csrf_token"] != request.form["csrf_token"]:
         flash("CSRF Token error", "error")
         return redirect(f"/moderatorpanel")
-    
+
     suggestion_id = request.form["suggestion_id"]
     if not suggestion_id.isnumeric():
         flash("ID ei ole numero", "error")
@@ -304,14 +324,15 @@ def remove_suggestion():
     elif resp == True:
         flash("Ehdotus poistettu onnistuneesti!", "success")
         return redirect(f"/moderatorpanel")
-    
-@app.route("/accept-suggestion",methods=["POST"])
+
+
+@app.route("/accept-suggestion", methods=["POST"])
 @moderator
 def accept_suggestion():
     if accounts.session["csrf_token"] != request.form["csrf_token"]:
         flash("CSRF Token error", "error")
         return redirect(f"/moderatorpanel")
-    
+
     suggestion_id = request.form["suggestion_id"]
     if not suggestion_id.isnumeric():
         flash("ID ei ole numero", "error")
@@ -326,15 +347,15 @@ def accept_suggestion():
     elif resp == True:
         flash("Ehdotus hyväksytty onnistuneesti!", "success")
         return redirect(f"/moderatorpanel")
-    
 
-@app.route("/deletecourse",methods=["POST"])
+
+@app.route("/deletecourse", methods=["POST"])
 @moderator
 def deletecourse():
     if accounts.session["csrf_token"] != request.form["csrf_token"]:
         flash("CSRF Token error", "error")
         return redirect(f"/moderatorpanel")
-    
+
     course_id = request.form["course_id"]
 
     resp = courses.deletecourse(course_id)
