@@ -6,6 +6,7 @@ from secrets import token_hex
 import courses
 import accounts
 import comments
+import suggestions
 
 app.secret_key = getenv("SECRET_KEY")
 
@@ -116,7 +117,8 @@ def course_page(course_id):
     return render_template("course_template.html",
                             content=content,
                             average_rating=average_rating,
-                            comments=comments, course_id=course_id,
+                            comments=comments, 
+                            course_id=course_id,
                             account_type=account_type,
                             enrollments=enrollments,
                             is_enrolled=is_enrolled
@@ -227,3 +229,118 @@ def cancel_enrollment():
     else:
         flash("Kirjaudu sisään peruaksesi kurssi-ilmoittautumisesi", "error")
         return redirect(f"courses/{course_id}")
+    
+@app.route("/createsuggestion/", methods=["GET", "POST"])
+def create_suggestion():
+    if request.method == "GET":
+        accounts.session["csrf_token"] = token_hex(16) # Renew Token for extra safety
+        return render_template("createsuggestion.html")
+    elif request.method == "POST":
+        if accounts.session["csrf_token"] != request.form["csrf_token"]:
+            flash("CSRF Token error", "error")
+            return redirect(f"/createsuggestion/")
+
+        if accounts.is_logged_in():
+            user_id = accounts.get_user_id()
+        else:
+            flash("Kirjaudu sisään ehdottaaksesi kurssia", "error")
+            return redirect("/createsuggestion")
+
+        title = request.form["course_title"]
+        op = request.form["course_credits"]
+        description = request.form["course_description"]
+
+        # Input checking
+        if len(title) < 1:
+            flash("Kurssin nimi on liian lyhyt", "error")
+            return redirect("/createsuggestion")
+        
+        if not op.isnumeric():
+            flash("Opintopisteiden tulee olla numero", "error")
+            return redirect("/createsuggestion")
+        else:
+            op = int(op)
+        
+        if len(description) < 10:
+            flash("Kurssin kuvaus on liian lyhyt", "error")
+            return redirect("/createsuggestion")
+        
+        resp = suggestions.create_suggestion(title, op, description, user_id)
+        if resp == True:
+            flash("Kurssiehdotus lisätty onnistuneesti", "success")
+            return redirect("/createsuggestion")
+        else:
+            flash("Ongelma ehdotuksen luomisessa", "error")
+            return redirect("/createsuggestion")
+
+@app.route("/moderatorpanel",methods=["GET", "POST"])
+@moderator
+def moderatorpanel():
+    if request.method == "GET":
+        fetched_suggestions = suggestions.fetch_suggestions()
+        if suggestions == False:
+            flash("Ongelma ehdotusten lataamisessa", "error")
+            return redirect("/")
+        return render_template("moderatorpanel.html", suggestions=fetched_suggestions)
+
+@app.route("/remove-suggestion",methods=["POST"])
+@moderator
+def remove_suggestion():
+    if accounts.session["csrf_token"] != request.form["csrf_token"]:
+        flash("CSRF Token error", "error")
+        return redirect(f"/moderatorpanel")
+    
+    suggestion_id = request.form["suggestion_id"]
+    if not suggestion_id.isnumeric():
+        flash("ID ei ole numero", "error")
+        return redirect(f"/moderatorpanel")
+    else:
+        suggestion_id = int(suggestion_id)
+
+    resp = suggestions.remove_suggestion(suggestion_id)
+    if resp == False:
+        flash("Ongelma ehdotuksen poistamisessa", "error")
+        return redirect(f"/moderatorpanel")
+    elif resp == True:
+        flash("Ehdotus poistettu onnistuneesti!", "success")
+        return redirect(f"/moderatorpanel")
+    
+@app.route("/accept-suggestion",methods=["POST"])
+@moderator
+def accept_suggestion():
+    if accounts.session["csrf_token"] != request.form["csrf_token"]:
+        flash("CSRF Token error", "error")
+        return redirect(f"/moderatorpanel")
+    
+    suggestion_id = request.form["suggestion_id"]
+    if not suggestion_id.isnumeric():
+        flash("ID ei ole numero", "error")
+        return redirect(f"/moderatorpanel")
+    else:
+        suggestion_id = int(suggestion_id)
+
+    resp = suggestions.accept_suggestion(suggestion_id)
+    if resp == False:
+        flash("Ongelma ehdotuksen hyväksymisessä", "error")
+        return redirect(f"/moderatorpanel")
+    elif resp == True:
+        flash("Ehdotus hyväksytty onnistuneesti!", "success")
+        return redirect(f"/moderatorpanel")
+    
+
+@app.route("/deletecourse",methods=["POST"])
+@moderator
+def deletecourse():
+    if accounts.session["csrf_token"] != request.form["csrf_token"]:
+        flash("CSRF Token error", "error")
+        return redirect(f"/moderatorpanel")
+    
+    course_id = request.form["course_id"]
+
+    resp = courses.deletecourse(course_id)
+    if resp == True:
+        flash("Kurssi poistettu onnistuneesti!", "success")
+        return redirect("/")
+    elif resp == False:
+        flash("Kurssin poistamisessa ilmeni ongelma", "error")
+        return redirect("/")

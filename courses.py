@@ -53,7 +53,8 @@ def fetch_courses_toprated(query):
         A.description, 
         A.visible
     ORDER BY 
-        COALESCE(AVG(B.rating), 0) DESC
+        COALESCE(AVG(B.rating), 0) DESC,
+        A.name ASC
     """
     result = db.session.execute(text(sql), {"query":"%"+query+"%"}).fetchall()
     return result
@@ -84,7 +85,8 @@ def fetch_courses_trending(query):
         A.description, 
         A.visible
     ORDER BY 
-        COUNT(C.id) DESC
+        COUNT(C.id) DESC,
+        A.name ASC
     """
     result = db.session.execute(text(sql), {"query":"%"+query+"%"}).fetchall()
     return result
@@ -166,4 +168,13 @@ def cancel_enrollment(course_id, user_id):
         return True
     except:
         db.session.rollback()
+        return False
+    
+def deletecourse(course_id):
+    try:
+        sql = "UPDATE courses SET visible=FALSE WHERE id=:course_id"
+        db.session.execute(text(sql), {"course_id":course_id})
+        db.session.commit()
+        return True
+    except:
         return False

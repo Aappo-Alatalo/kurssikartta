@@ -16,7 +16,7 @@
                 </label>
                 <label for="trending">
                     <input type="radio" id="trending" name="sort" value="trending" onchange="this.form.submit()" checked>
-                    Trendaavuus <i class='bx bxs-hot' style='color:#e75b0e' ></i>
+                    Trendaavuus <i class='bx bxs-hot' style='color:#e75b0e'></i>
                 </label><br>
                 <label for="toprated">
                     <input type="radio" id="toprated" name="sort" value="toprated" onchange="this.form.submit()">
@@ -27,7 +27,6 @@
                     Aakkosjärjestys
                 </label>
             </div>
-
         </form>
         <script src="../static/js/sortChecker.js"></script>
         <br>
@@ -61,7 +60,7 @@
             {% endfor %}
         {% elif fetched_courses is defined and fetched_courses|length == 0 %}
             <p>Etsimääsi kurssia ei löytynyt 🔍😕</p>
-            <p>Ehdota kurssin lisäämistä moderaattoreillemme <a href="/">tästä</a></p>
+            <p>Ehdota kurssin lisäämistä moderaattoreillemme <a href="createsuggestion/">tästä</a></p>
         {% else %}
             <p>ERROR</p>
         {% endif %}

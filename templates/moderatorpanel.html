@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Moderator{% endblock %}
+{% block base_block %}
+    <div class="center_div">
+        <h1>Terve, moderaattori {{ session.username }}</h1>
+
+        <a href="/" class="back_arrow">&#8592;</a> <!-- Backwards arrow -->
+        {% for suggestion in suggestions %}
+            <div class="course_detail_card" style="margin-bottom: 10px;">
+                <p>Ehdottaja: {{ suggestion.username }}</p>
+                <p>Ehdotus päivämäärä: {{ suggestion.created_at.strftime('%d-%m-%Y %H:%M')}}</p>
+                <p>Ehdotuksen tila: {{ suggestion.status }}</p>
+
+                <h1>{{ suggestion.name }}<span style="font-size: 18px;"> {{ suggestion.credits }} op</span></h1>
+                <p>{{ suggestion.description }}</p>
+                
+                <div class="action_buttons">
+                    <form action="/accept-suggestion" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                        <input type="hidden" name="suggestion_id" value="{{ suggestion.id }}">
+                        <button type="submit" class="accept_button">Hyväksy</button>
+                    </form>
+                    <form action="/remove-suggestion" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                        <input type="hidden" name="suggestion_id" value="{{ suggestion.id }}">
+                        <button type="submit" class="remove_button">Hylkää</button>
+                    </form>
+                </div>
+
+            </div>
+        {% endfor %}
+
+    </div>
+{% endblock %}

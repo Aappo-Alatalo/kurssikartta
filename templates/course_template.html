@@ -10,6 +10,15 @@
                 <a href="/" class="back_arrow">&#8592;</a> <!-- Backwards arrow -->
 
                 <h1>{{ content.name }}<span style="font-size: 18px;"> {{ content.credits }} op</span></h1>
+
+                {% if account_type == 1 %}
+                    <form action="/deletecourse" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                        <input type="hidden" name="course_id" value="{{ course_id }}">
+                        <button type="submit" class="button">Delete course</button>
+                    </form>
+                {% endif %}
+
                 <p>{{ content.description }}</p>
                 <h3>
                     {% if average_rating %}

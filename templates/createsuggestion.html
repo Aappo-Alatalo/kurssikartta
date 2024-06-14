@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block title %}Ehdota{% endblock %}
+{% block content %}
+<body>
+    <div class="suggestion_form">
+        <a href="/"  class="back_arrow">&#8592;</a> <!-- Backwards arrow -->
+        <h2>Ehdota kurssia</h2>
+        <form action="/createsuggestion/" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+
+            <label for="course_title">Kurssin nimi:</label>
+            <input type="text" id="course_title" name="course_title" placeholder="Anna kurssin nimi" required>
+        
+            <label for="course_credits">Kurssin opintopisteet:</label>
+            <input type="number" id="course_credits" name="course_credits" placeholder="op" min="0" max="99" required>
+        
+            <label for="course_description">Kurssin kuvaus:</label>
+            <textarea id="course_description" name="course_description" placeholder="Anna kurssille kuvaus" maxlength="1000" required></textarea>
+        
+            <button type="submit">Lähetä</button>
+        </form>
+    </div>
+</body>
+{% endblock %}

@@ -15,6 +15,11 @@
                     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                     <button type="submit" class="button">Kirjaudu ulos</button>
                 </form>
+            
+            {% if session.account_type == 1 %}
+                <br>
+                <a href="/moderatorpanel"><button class="button">Moderaattoripaneeliin!</button></a>
+            {% endif %}
             </div>
         {% else %}
             <div>
@@ -41,5 +46,14 @@
     {%endwith%}
 
     {% block content %}{% endblock %}
-    
+
+    <footer class="footer_banner">
+        <p>Etkö löytänyt etsimääsi kurssia? <a href="/createsuggestion">Klikkaa tästä luodaksesi uuden kurssiehdotuksen!</a></p>
+        <br>
+        <p style="font-size: small;">Moderaattorimme tarkastavat ehdotukset ja lisäävät ne kurssikarttaan</p>
+        <br>
+        <i style="font-size: x-large;" class='bx bxl-flask'></i>
+    </footer>
+
+
 {% endblock %}

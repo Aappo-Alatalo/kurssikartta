@@ -257,3 +257,128 @@ body {
 .tooltip:hover .tooltiptext {
     visibility: visible;
 }
+
+.suggestion_form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 600px;
+    margin: auto;
+    padding: 50px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+.suggestion_form form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+.suggestion_form input[type="text"], 
+.suggestion_form input[type="number"], 
+.suggestion_form textarea, 
+.suggestion_form button {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.suggestion_form input[type="number"] {
+    max-width: 100px;
+}
+
+.suggestion_form textarea {
+    height: 150px;
+    resize: none;
+}
+
+.suggestion_form button {
+    width: 100%;
+    padding: 10px;
+    background-color: pink;
+    color: black;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: .4s;
+}
+
+.suggestion_form button:hover {
+    background-color: rgb(210, 120, 135);
+    box-shadow: 5px 5px 0 -1px rgb(222, 123, 140),
+    5px 5px black;
+}
+
+.action_buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.action_buttons form {
+    margin: 0;
+}
+
+.accept_button, .remove_button {
+    padding: 10px 20px;
+    border: 2px solid black;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.accept_button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.accept_button:hover {
+    background-color: #45a049;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.remove_button {
+    background-color: #f44336;
+    color: white;
+}
+
+.remove_button:hover {
+    background-color: #da190b;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.footer_banner {
+    width: 100%;
+    background-color: rgba(255, 182, 193, 0.9); /* Opaque pinkish color */
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 30px;
+    font-size: 18px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.footer_banner p {
+    font-size: smaller;
+    margin: 0;
+    color: #333;
+}
+
+.footer_banner a {
+    color: #333;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer_banner a:hover {
+    color: #000;
+}
