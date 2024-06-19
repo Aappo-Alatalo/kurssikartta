@@ -1,6 +1,9 @@
 # Kurssikartta
 ## Kurssikartta is my web application project for the University of Helsinki course "Tietokannat ja web-ohjelmointi". 
 
+## Kurssikartta is now online
+**https://kurssikartta.fly.dev/**
+
 ## Technical features
 - **University Course Reviews**: Users can submit reviews and ratings for  courses they have taken, sharing their perspectives on various aspects such as course content and difficulty level.
 - **Authentication**: Users can browse courses and reviews without authenticating, but reviews and comments can be posted only if authenticated.
