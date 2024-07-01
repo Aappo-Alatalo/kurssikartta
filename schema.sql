@@ -47,12 +47,6 @@ CREATE TABLE enrollments (
     CONSTRAINT unique_course_user UNIQUE (course_id, user_id)
 );
 
-INSERT INTO users (username, password, account_type) VALUES ('aappo', 'scrypt:32768:8:1$9dSFfZSyzkeRQOnU$b2c82fac6ecd1ecff802b97f93003bc9cd4f30821fc82365ee5480942e8479901fece5ca8a2c55eecd23be339846803638d6380adfe548c42afd7a7089cab83f', 1);
-
-INSERT INTO courses (name, credits, description) VALUES ('Ohjelmoinnin perusteet', 5, 'Opiskelijan ensimmänen kosketus ohjelmointiin.');
-INSERT INTO courses (name, credits, description) VALUES ('Ohjelmoinnin jatkokurssi', 5, 'Opiskelijan toinen kosketus ohjelmointiin.');
-INSERT INTO courses (name, credits, description) VALUES ('Tietokone ja internet', 5, 'Kurssilla käsitellään vähän kaikenlaista ja kirjoitellaan esseitä 4-6 hengen ryhmissä.');
-INSERT INTO courses (name, credits, description) VALUES ('Tietokantojen perusteet', 5, 'Opiskelijan ensimmäinen kosketus tietokantoihin. Kurssilla on käytössä SQLite3.');
-
-INSERT INTO comments (course_id, author_id, rating, content) VALUES (1, 1, 4, 'Kurssi oli mielestäni onnistunut, sillä jady jada.');
-INSERT INTO comments (course_id, author_id, rating, content) VALUES (1, 1, 3, 'Oli tylsää');
+INSERT INTO courses (name, credits, description) VALUES ('Ohjelmoinnin perusteet', 5, 'Opiskelijan ensimmänen kosketus ohjelmointiin. Ohjelmointikielenä Python.');
+INSERT INTO courses (name, credits, description) VALUES ('Ohjelmoinnin jatkokurssi', 5, 'Opiskelijan toinen kosketus ohjelmointiin. Ohjelmointikielenä Python.');
+INSERT INTO courses (name, credits, description) VALUES ('Tietokone ja internet', 5, 'Kurssilla käsitellään tietokoneen ja internetin toiminnan perusperiaatteita. Kurssi on erittäin ryhmätyöpainoitteinen.');

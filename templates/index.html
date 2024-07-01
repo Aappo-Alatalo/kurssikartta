@@ -3,7 +3,9 @@
 {% block content %}
 <body>
     <div class="center_div">
-        <h1>Kurssikartta.fi</h1>
+        <h1>Kurssikartta</h1>
+        <h3>Pysy kartalla opinnoistasi!</h3>
+        <br>
         <form style="min-width: 25%; width: auto;" action="/result" method="GET">
             <div style="min-width: 25%; width: auto;">
                 <input type="text" class="search_box" name="query", value="{{ session.latest_search }}" placeholder="Etsi kurssia 🔍", autocomplete="off">
